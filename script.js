@@ -1,63 +1,149 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbzE6zjlrA2iTSYsG4upYnk7Gv0PQduWv74r4cRBU-EGPEUnQBrclQl8Pf--FX44xdeeEg/exec";
 
-// Dashboard Load
+// Auto start
 
-async function loadDashboard() {
+window.onload = function () {
+
+navigate("dashboard");
+
+};
+
+// Navigation
+
+function navigate(page) {
+
+if (page === "dashboard")
+dashboard();
+
+if (page === "motors")
+motors();
+
+if (page === "maintenance")
+maintenance();
+
+if (page === "breakdown")
+breakdown();
+
+if (page === "repair")
+repair();
+
+if (page === "directory")
+directory();
+
+}
+
+// Dashboard API
+
+async function dashboard() {
+
+setContent("Loading...");
 
 try {
 
-const res = await fetch(
+const res =
+await fetch(
 API_URL + "?action=getDashboard"
 );
 
-const data = await res.json();
-
-if (data.success) {
+const data =
+await res.json();
 
 showDashboard(data.stats);
 
 }
-else {
+catch {
 
-document.getElementById("dashboard")
-.innerHTML =
-"Error loading dashboard";
-
-}
-
-}
-catch(error) {
-
-console.error(error);
-
-document.getElementById("dashboard")
-.innerHTML =
-"API connection error";
+setContent("Dashboard error");
 
 }
 
 }
 
-// Show Data
+// Show dashboard
 
-function showDashboard(stats) {
+function showDashboard(s) {
 
-document.getElementById("dashboard")
-.innerHTML = `
+setContent(`
 
-<p>Total Motors: ${stats.totalMotors}</p>
+<div class="stats-grid">
 
-<p>Running: ${stats.running}</p>
+<div class="stat-card">
 
-<p>Under Repair: ${stats.underRepair}</p>
+<div class="stat-label">
 
-<p>Spare Motors: ${stats.spare}</p>
+Total Motors
 
-<p>HT Motors: ${stats.htMotors}</p>
+</div>
 
-<p>LT Motors: ${stats.ltMotors}</p>
+<div class="stat-value">
 
-`;
+${s.totalMotors}
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-label">
+
+Running
+
+</div>
+
+<div class="stat-value">
+
+${s.running}
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-label">
+
+Under Repair
+
+</div>
+
+<div class="stat-value">
+
+${s.underRepair}
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-label">
+
+Spare
+
+</div>
+
+<div class="stat-value">
+
+${s.spare}
+
+</div>
+
+</div>
+
+</div>
+
+`);
+
+}
+
+// helper
+
+function setContent(html) {
+
+document.getElementById(
+"pageContent"
+).innerHTML = html;
 
 }
