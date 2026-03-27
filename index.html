@@ -1,279 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SP5 Electrical">
+<meta name="theme-color" content="#0F1923">
+<title>SP5 Electrical Management</title>
+<style>
+/* ══════════════════════════════════════════════
+   SP5 ELECTRICAL — GitHub Pages Launcher
+   Mobile-first, full responsive
+   ══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{
+  height:100%;
+  font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#0F1923;
+  color:#E2E8F0;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
 
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
+:root{
+  --blue:#2563EB;--blue-l:#3B82F6;
+  --green:#16A34A;--green-l:#22C55E;
+  --red:#DC2626;--amber:#D97706;
+  --bg0:#0F1923;--bg1:#162232;--bg2:#1E2D3E;
+  --text1:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
+  --border:rgba(255,255,255,0.08);
+  --radius:10px;--radius-lg:14px;
+}
 
-<title>SP5 Electrical</title>
+/* grid background */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0;
+}
 
-<link rel="stylesheet"
-href="style.css">
+/* ── IFRAME MODE (main display) ────────────────────── */
+#app-frame{
+  position:fixed;inset:0;width:100%;height:100%;
+  border:none;z-index:10;display:none;
+}
 
+/* ── LAUNCHER SCREEN ───────────────────────────────── */
+#launcher{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px 20px;
+  gap:0;
+}
+
+.logo-wrap{
+  text-align:center;margin-bottom:32px;
+}
+.logo-bolt{
+  font-size:56px;line-height:1;
+  filter:drop-shadow(0 0 20px rgba(37,99,235,0.5));
+  margin-bottom:12px;
+  display:block;
+}
+.logo-title{
+  font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.02em;
+  line-height:1.1;
+}
+.logo-sub{
+  font-size:13px;color:var(--text3);margin-top:6px;letter-spacing:0.04em;
+}
+
+/* Config card */
+.config-card{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;
+  width:100%;max-width:440px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.config-title{
+  font-size:12px;font-weight:700;color:var(--text3);
+  letter-spacing:0.1em;text-transform:uppercase;
+  margin-bottom:16px;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.form-group{margin-bottom:14px}
+.form-group label{
+  display:block;font-size:11px;font-weight:600;
+  color:var(--text2);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:0.06em;
+}
+.form-group input{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:11px 14px;color:var(--text1);font-size:14px;
+  transition:border .2s;
+  -webkit-appearance:none;
+}
+.form-group input:focus{outline:none;border-color:var(--blue-l)}
+.form-group input::placeholder{color:var(--text3)}
+
+.btn-launch{
+  width:100%;padding:14px;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--radius);
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:background .2s;margin-top:4px;
+  -webkit-tap-highlight-color:transparent;
+  letter-spacing:0.02em;
+}
+.btn-launch:hover{background:var(--blue-l)}
+.btn-launch:active{transform:scale(0.98)}
+
+.hint{
+  font-size:11px;color:var(--text3);margin-top:12px;
+  line-height:1.6;text-align:center;
+}
+.hint a{color:var(--blue-l)}
+
+/* Saved URLs list */
+.saved-label{
+  font-size:11px;color:var(--text3);font-weight:600;
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin:20px 0 8px;
+}
+.saved-list{display:flex;flex-direction:column;gap:6px}
+.saved-item{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 14px;cursor:pointer;
+  transition:border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.saved-item:hover{border-color:rgba(255,255,255,0.15)}
+.saved-name{font-size:13px;color:var(--text1);font-weight:600;flex:1}
+.saved-url{font-size:10px;color:var(--text3);font-family:monospace;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+.saved-del{
+  color:var(--text3);background:none;border:none;cursor:pointer;
+  font-size:16px;padding:2px 4px;border-radius:4px;flex-shrink:0;
+}
+.saved-del:hover{color:var(--red);background:rgba(220,38,38,0.1)}
+
+/* Error */
+.error-box{
+  background:rgba(220,38,38,0.1);border:1px solid var(--red);
+  border-radius:var(--radius);padding:10px 14px;
+  color:#FCA5A5;font-size:13px;margin-top:10px;display:none;
+}
+
+/* ── TOPBAR (when app is open) ──────────────────────── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;
+  height:48px;
+  background:var(--bg1);border-bottom:1px solid var(--border);
+  display:none;align-items:center;
+  padding:0 12px;gap:10px;z-index:20;
+}
+#topbar .tb-title{
+  flex:1;font-size:14px;font-weight:700;color:var(--text1);
+}
+.tb-btn{
+  background:none;border:none;color:var(--text2);cursor:pointer;
+  font-size:13px;padding:6px 10px;border-radius:6px;
+  border:1px solid var(--border);white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.tb-btn:hover{background:var(--bg2)}
+
+/* ── MOBILE BOTTOM SHEET for URL input ─────────────── */
+@media(max-width:600px){
+  .config-card{border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    position:fixed;bottom:0;left:0;right:0;max-width:100%;
+    padding:20px 20px 32px;}
+  #launcher{justify-content:flex-start;padding-top:40px}
+  .logo-wrap{margin-bottom:20px}
+}
+
+/* ── INSTALL PWA BANNER ─────────────────────────────── */
+#pwa-banner{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg1);border-top:1px solid var(--border);
+  padding:12px 16px;z-index:30;
+  flex-direction:column;gap:8px;
+}
+#pwa-banner p{font-size:13px;color:var(--text2)}
+#pwa-banner strong{color:var(--text1)}
+#pwa-banner .pwa-btns{display:flex;gap:8px}
+#pwa-banner button{
+  padding:8px 16px;border-radius:var(--radius);border:none;
+  font-size:13px;font-weight:600;cursor:pointer;
+}
+.pwa-install{background:var(--blue);color:#fff}
+.pwa-dismiss{background:transparent;color:var(--text3);border:1px solid var(--border) !important}
+</style>
 </head>
-
 <body>
 
-<!-- LOGIN SCREEN -->
-
-<div id="loginScreen"
-class="login-screen">
-
-<div class="login-card">
-
-<div class="login-logo">
-
-<div class="logo-icon">
-⚡
+<!-- Topbar (shown when app loads in iframe) -->
+<div id="topbar">
+  <div class="tb-title">⚡ SP5 Electrical</div>
+  <button class="tb-btn" onclick="openFullscreen()">⛶ Fullscreen</button>
+  <button class="tb-btn" onclick="closeApp()">✕ Close</button>
 </div>
 
-<div class="login-title">
-SP5 Electrical
+<!-- Iframe for the Apps Script web app -->
+<iframe id="app-frame" allowfullscreen></iframe>
+
+<!-- Launcher screen -->
+<div id="launcher">
+  <div class="logo-wrap">
+    <span class="logo-bolt">⚡</span>
+    <div class="logo-title">SP5 Electrical</div>
+    <div class="logo-sub">MANAGEMENT SYSTEM · SP-5 SCREENING PLANT</div>
+  </div>
+
+  <div class="config-card">
+    <div class="config-title">Connect to App</div>
+
+    <div class="form-group">
+      <label>Apps Script Web App URL</label>
+      <input type="url" id="appUrl"
+        placeholder="https://script.google.com/macros/s/..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    </div>
+
+    <div class="form-group">
+      <label>Save as (name)</label>
+      <input type="text" id="appName" placeholder="SP5 Production" value="SP5 Electrical">
+    </div>
+
+    <button class="btn-launch" onclick="launchApp()">Launch App →</button>
+    <div class="error-box" id="errBox"></div>
+
+    <div class="hint">
+      Paste your Google Apps Script deployment URL above.<br>
+      <a href="#" onclick="showHelp()">How to get the URL?</a>
+    </div>
+
+    <div id="savedSection" style="display:none">
+      <div class="saved-label">Saved Apps</div>
+      <div class="saved-list" id="savedList"></div>
+    </div>
+  </div>
 </div>
 
-<div class="login-sub">
-Management System
+<!-- PWA install banner -->
+<div id="pwa-banner">
+  <p><strong>Install SP5 App</strong> — Add to Home Screen for best mobile experience</p>
+  <div class="pwa-btns">
+    <button class="pwa-install" onclick="installPWA()">Install</button>
+    <button class="pwa-dismiss" onclick="dismissPWA()">Not now</button>
+  </div>
 </div>
 
-</div>
-
-<div class="form-group">
-
-<label>Username</label>
-
-<input
-type="text"
-id="loginUser"
-placeholder="Enter username">
-
-</div>
-
-<div class="form-group">
-
-<label>Password</label>
-
-<input
-type="password"
-id="loginPass"
-placeholder="Enter password">
-
-</div>
-
-<div id="loginError"
-class="login-error"
-style="display:none">
-
-</div>
-
-<button
-class="btn btn-primary btn-full"
-onclick="doLogin()">
-
-<span id="loginBtnText">
-Login
-</span>
-
-</button>
-
-</div>
-
-</div>
-
-<!-- MAIN APP -->
-
-<div id="app"
-style="display:none">
-
-<!-- Topbar -->
-
-<div class="topbar">
-
-<button
-class="menu-btn"
-onclick="toggleSidebar()">
-
-☰
-
-</button>
-
-<div
-class="topbar-title"
-id="pageTitle">
-
-Dashboard
-
-</div>
-
-<div class="topbar-right">
-
-<span
-class="user-chip"
-id="userChip">
-
-</span>
-
-<button
-class="icon-btn"
-onclick="doLogout()">
-
-⏻
-
-</button>
-
-</div>
-
-</div>
-
-<!-- Sidebar -->
-
-<div class="sidebar"
-id="sidebar">
-
-<div class="sidebar-header">
-
-<div class="sidebar-logo">
-⚡ SP5 Elec.
-</div>
-
-<button
-class="sidebar-close"
-onclick="toggleSidebar()">
-
-✕
-
-</button>
-
-</div>
-
-<nav class="sidebar-nav">
-
-<a class="nav-item active"
-onclick="navigate('dashboard')"
-data-page="dashboard">
-
-Dashboard
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('motors')"
-data-page="motors">
-
-Motor List
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('maintenance')"
-data-page="maintenance">
-
-Maintenance
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('greasing')"
-data-page="greasing">
-
-Greasing
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('repair')"
-data-page="repair">
-
-Repair
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('breakdown')"
-data-page="breakdown">
-
-Breakdown
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('directory')"
-data-page="directory">
-
-Directory
-
-</a>
-
-</nav>
-
-</div>
-
-<div class="sidebar-overlay"
-id="sidebarOverlay"
-onclick="toggleSidebar()">
-
-</div>
-
-<!-- PAGE CONTENT -->
-
-<div class="page-content"
-id="pageContent">
-
-Loading...
-
-</div>
-
-</div>
-
-<!-- MODAL -->
-
-<div class="modal-overlay"
-id="modalOverlay"
-onclick="closeModal()">
-
-</div>
-
-<div class="modal"
-id="modal">
-
-<div class="modal-header">
-
-<div class="modal-title"
-id="modalTitle">
-
-Form
-
-</div>
-
-<button
-class="modal-close"
-onclick="closeModal()">
-
-✕
-
-</button>
-
-</div>
-
-<div class="modal-body"
-id="modalBody">
-
-</div>
-
-</div>
-
-<div class="toast"
-id="toast">
-
-</div>
-
-<script src="script.js"></script>
-
+<script>
+// ── Saved apps (localStorage) ─────────────────────────────────
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem('sp5_apps') || '[]'); }
+  catch(e) { return []; }
+}
+function saveTo(name, url) {
+  const apps = getSaved().filter(a => a.url !== url);
+  apps.unshift({ name, url, ts: Date.now() });
+  localStorage.setItem('sp5_apps', JSON.stringify(apps.slice(0, 5)));
+}
+function deleteSaved(url) {
+  const apps = getSaved().filter(a => a.url !== url);
+  localStorage.setItem('sp5_apps', JSON.stringify(apps));
+  renderSaved();
+}
+
+function renderSaved() {
+  const apps = getSaved();
+  const sec  = document.getElementById('savedSection');
+  const list = document.getElementById('savedList');
+  if (!apps.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = apps.map(a => `
+    <div class="saved-item" onclick="loadSaved('${encodeURIComponent(a.url)}','${encodeURIComponent(a.name)}')">
+      <div>
+        <div class="saved-name">${a.name}</div>
+        <div class="saved-url">${a.url.replace('https://script.google.com/macros/s/','…/')}</div>
+      </div>
+      <button class="saved-del" onclick="event.stopPropagation();deleteSaved('${encodeURIComponent(a.url)}')" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+function loadSaved(encodedUrl, encodedName) {
+  const url  = decodeURIComponent(encodedUrl);
+  const name = decodeURIComponent(encodedName);
+  document.getElementById('appUrl').value  = url;
+  document.getElementById('appName').value = name;
+  launchApp();
+}
+
+// ── Launch ────────────────────────────────────────────────────
+function launchApp() {
+  const url  = document.getElementById('appUrl').value.trim();
+  const name = document.getElementById('appName').value.trim() || 'SP5 Electrical';
+  const err  = document.getElementById('errBox');
+  err.style.display = 'none';
+
+  if (!url) { showErr('Please enter the Apps Script Web App URL'); return; }
+  if (!url.startsWith('https://script.google.com/macros/s/')) {
+    showErr('URL must start with https://script.google.com/macros/s/\n\nDouble-check your deployment URL in Apps Script.');
+    return;
+  }
+
+  saveTo(name, url);
+
+  // Show iframe + topbar
+  const frame = document.getElementById('app-frame');
+  frame.src = url;
+  frame.style.display = 'block';
+  frame.style.top = '48px';
+  frame.style.height = 'calc(100% - 48px)';
+
+  const tb = document.getElementById('topbar');
+  tb.style.display = 'flex';
+  tb.querySelector('.tb-title').textContent = '⚡ ' + name;
+
+  document.getElementById('launcher').style.display = 'none';
+
+  // Save last used
+  localStorage.setItem('sp5_last', JSON.stringify({ url, name }));
+}
+
+function closeApp() {
+  document.getElementById('app-frame').src = 'about:blank';
+  document.getElementById('app-frame').style.display = 'none';
+  document.getElementById('topbar').style.display = 'none';
+  document.getElementById('launcher').style.display = 'flex';
+}
+
+function openFullscreen() {
+  const frame = document.getElementById('app-frame');
+  if (frame.requestFullscreen) frame.requestFullscreen();
+  else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+  else {
+    // Fallback: open directly in new tab
+    const url = localStorage.getItem('sp5_last');
+    if (url) window.open(JSON.parse(url).url, '_blank');
+  }
+}
+
+function showErr(msg) {
+  const b = document.getElementById('errBox');
+  b.textContent = msg; b.style.display = 'block';
+}
+
+function showHelp() {
+  alert('Steps to get the URL:\n\n1. Open Apps Script (script.google.com)\n2. Click "Deploy" → "Manage deployments"\n3. Copy the Web App URL\n   (starts with https://script.google.com/macros/s/...)\n4. Paste it here');
+}
+
+// ── Auto-load last used app ───────────────────────────────────
+window.addEventListener('load', () => {
+  renderSaved();
+  const last = localStorage.getItem('sp5_last');
+  if (last) {
+    try {
+      const { url, name } = JSON.parse(last);
+      document.getElementById('appUrl').value  = url;
+      document.getElementById('appName').value = name;
+    } catch(e) {}
+  }
+});
+
+// ── PWA Install ───────────────────────────────────────────────
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const dismissed = localStorage.getItem('pwa_dismissed');
+  if (!dismissed) document.getElementById('pwa-banner').style.display = 'flex';
+});
+
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('pwa-banner').style.display = 'none';
+  });
+}
+function dismissPWA() {
+  localStorage.setItem('pwa_dismissed', '1');
+  document.getElementById('pwa-banner').style.display = 'none';
+}
+</script>
+
+<!-- PWA Manifest (inline) -->
+<script>
+const manifest = {
+  name: 'SP5 Electrical Management',
+  short_name: 'SP5 Elec',
+  description: 'SP5 Electrical Department Management System',
+  start_url: './',
+  display: 'standalone',
+  background_color: '#0F1923',
+  theme_color: '#0F1923',
+  icons: [
+    { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230F1923"/><text y=".9em" font-size="80">⚡</text></svg>', sizes: '192x192', type: 'image/svg+xml' }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = URL.createObjectURL(blob);
+document.head.appendChild(link);
+</script>
 </body>
-
 </html>
