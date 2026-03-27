@@ -6,35 +6,125 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
 
 <title>SP5 Electrical</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
 
 </head>
 
 <body>
 
+<!-- LOGIN SCREEN -->
+
+<div id="loginScreen"
+class="login-screen">
+
+<div class="login-card">
+
+<div class="login-logo">
+
+<div class="logo-icon">
+⚡
+</div>
+
+<div class="login-title">
+SP5 Electrical
+</div>
+
+<div class="login-sub">
+Management System
+</div>
+
+</div>
+
+<div class="form-group">
+
+<label>Username</label>
+
+<input
+type="text"
+id="loginUser"
+placeholder="Enter username">
+
+</div>
+
+<div class="form-group">
+
+<label>Password</label>
+
+<input
+type="password"
+id="loginPass"
+placeholder="Enter password">
+
+</div>
+
+<div id="loginError"
+class="login-error"
+style="display:none">
+
+</div>
+
+<button
+class="btn btn-primary btn-full"
+onclick="doLogin()">
+
+<span id="loginBtnText">
+Login
+</span>
+
+</button>
+
+</div>
+
+</div>
+
 <!-- MAIN APP -->
 
-<div id="app">
+<div id="app"
+style="display:none">
 
 <!-- Topbar -->
 
 <div class="topbar">
 
-<button class="menu-btn"
+<button
+class="menu-btn"
 onclick="toggleSidebar()">
 
 ☰
 
 </button>
 
-<div class="topbar-title"
+<div
+class="topbar-title"
 id="pageTitle">
 
 Dashboard
+
+</div>
+
+<div class="topbar-right">
+
+<span
+class="user-chip"
+id="userChip">
+
+</span>
+
+<button
+class="icon-btn"
+onclick="doLogout()">
+
+⏻
+
+</button>
 
 </div>
 
@@ -48,12 +138,11 @@ id="sidebar">
 <div class="sidebar-header">
 
 <div class="sidebar-logo">
-
 ⚡ SP5 Elec.
-
 </div>
 
-<button class="sidebar-close"
+<button
+class="sidebar-close"
 onclick="toggleSidebar()">
 
 ✕
@@ -65,42 +154,56 @@ onclick="toggleSidebar()">
 <nav class="sidebar-nav">
 
 <a class="nav-item active"
-onclick="navigate('dashboard')">
+onclick="navigate('dashboard')"
+data-page="dashboard">
 
 Dashboard
 
 </a>
 
 <a class="nav-item"
-onclick="navigate('motors')">
+onclick="navigate('motors')"
+data-page="motors">
 
 Motor List
 
 </a>
 
 <a class="nav-item"
-onclick="navigate('maintenance')">
+onclick="navigate('maintenance')"
+data-page="maintenance">
 
 Maintenance
 
 </a>
 
 <a class="nav-item"
-onclick="navigate('breakdown')">
+onclick="navigate('greasing')"
+data-page="greasing">
 
-Breakdown
+Greasing
 
 </a>
 
 <a class="nav-item"
-onclick="navigate('repair')">
+onclick="navigate('repair')"
+data-page="repair">
 
 Repair
 
 </a>
 
 <a class="nav-item"
-onclick="navigate('directory')">
+onclick="navigate('breakdown')"
+data-page="breakdown">
+
+Breakdown
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('directory')"
+data-page="directory">
 
 Directory
 
@@ -116,10 +219,49 @@ onclick="toggleSidebar()">
 
 </div>
 
+<!-- PAGE CONTENT -->
+
 <div class="page-content"
 id="pageContent">
 
 Loading...
+
+</div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal-overlay"
+id="modalOverlay"
+onclick="closeModal()">
+
+</div>
+
+<div class="modal"
+id="modal">
+
+<div class="modal-header">
+
+<div class="modal-title"
+id="modalTitle">
+
+Form
+
+</div>
+
+<button
+class="modal-close"
+onclick="closeModal()">
+
+✕
+
+</button>
+
+</div>
+
+<div class="modal-body"
+id="modalBody">
 
 </div>
 
