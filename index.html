@@ -9,412 +9,253 @@
 <meta name="apple-mobile-web-app-title" content="SP5 Electrical">
 <meta name="theme-color" content="#0F1923">
 <title>SP5 Electrical Management</title>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   ★  ONLY THIS SECTION CHANGE KARO — BAAKI MAT CHHUONA  ★
+   ══════════════════════════════════════════════════════════
+
+   Agar dobara deploy karo Apps Script mein aur URL badle,
+   sirf niche APP_URL update karo aur GitHub par push karo.
+   ══════════════════════════════════════════════════════════ */
+
+const APP_CONFIG = {
+  APP_URL:   'https://script.google.com/macros/s/AKfycbzE6zjlrA2iTSYsG4upYnk7Gv0PQduWv74r4cRBU-EGPEUnQBrclQl8Pf--FX44xdeeEg/exec',
+  APP_NAME:  'SP5 Electrical Management',
+  APP_SHORT: 'SP5 Elec',
+  DEPT:      'SP-5 Screening Plant · Electrical Department',
+};
+
+/* ══════════════════════════════════════════════════════════
+   ★  UPAR TAK HI CHANGE KARO — NICHE MAT CHHUONA        ★
+   ══════════════════════════════════════════════════════════ */
+</script>
+
 <style>
-/* ══════════════════════════════════════════════
-   SP5 ELECTRICAL — GitHub Pages Launcher
-   Mobile-first, full responsive
-   ══════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%;-webkit-text-size-adjust:100%}
+html,body{height:100%;width:100%;overflow:hidden;-webkit-text-size-adjust:100%}
 body{
-  height:100%;
-  font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#0F1923;
-  color:#E2E8F0;
-  overflow-x:hidden;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#0F1923;color:#E2E8F0;
   -webkit-font-smoothing:antialiased;
 }
 
-:root{
-  --blue:#2563EB;--blue-l:#3B82F6;
-  --green:#16A34A;--green-l:#22C55E;
-  --red:#DC2626;--amber:#D97706;
-  --bg0:#0F1923;--bg1:#162232;--bg2:#1E2D3E;
-  --text1:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
-  --border:rgba(255,255,255,0.08);
-  --radius:10px;--radius-lg:14px;
-}
-
-/* grid background */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
-  background-size:36px 36px;pointer-events:none;z-index:0;
-}
-
-/* ── IFRAME MODE (main display) ────────────────────── */
+/* Full screen iframe — fills entire viewport */
 #app-frame{
-  position:fixed;inset:0;width:100%;height:100%;
-  border:none;z-index:10;display:none;
-}
-
-/* ── LAUNCHER SCREEN ───────────────────────────────── */
-#launcher{
-  position:relative;z-index:1;
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:24px 20px;
-  gap:0;
-}
-
-.logo-wrap{
-  text-align:center;margin-bottom:32px;
-}
-.logo-bolt{
-  font-size:56px;line-height:1;
-  filter:drop-shadow(0 0 20px rgba(37,99,235,0.5));
-  margin-bottom:12px;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;
+  border:none;
+  background:#0F1923;
   display:block;
 }
-.logo-title{
-  font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.02em;
-  line-height:1.1;
+
+/* Splash shown while iframe loads */
+#splash{
+  position:fixed;inset:0;
+  background:#0F1923;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;z-index:100;
+  transition:opacity .4s ease;
 }
-.logo-sub{
-  font-size:13px;color:var(--text3);margin-top:6px;letter-spacing:0.04em;
+#splash.hide{opacity:0;pointer-events:none}
+
+.splash-bolt{
+  font-size:64px;line-height:1;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.95)}}
+
+.splash-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.splash-dept{font-size:12px;color:#64748B;letter-spacing:.04em;margin-top:2px;text-align:center;padding:0 20px}
+
+.splash-bar{
+  width:180px;height:3px;
+  background:rgba(255,255,255,.08);
+  border-radius:2px;overflow:hidden;
+  margin-top:8px;
+}
+.splash-progress{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#2563EB,#3B82F6);
+  border-radius:2px;
+  transition:width .1s linear;
+}
+.splash-msg{font-size:12px;color:#64748B}
+   /* ===== Theme Variables ===== */
+:root{
+  --bg:#0F1923;
+  --text:#E2E8F0;
 }
 
-/* Config card */
-.config-card{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:24px;
-  width:100%;max-width:440px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.4);
-}
-.config-title{
-  font-size:12px;font-weight:700;color:var(--text3);
-  letter-spacing:0.1em;text-transform:uppercase;
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid var(--border);
+body{
+  background:var(--bg);
+  color:var(--text);
 }
 
-.form-group{margin-bottom:14px}
-.form-group label{
-  display:block;font-size:11px;font-weight:600;
-  color:var(--text2);margin-bottom:6px;
-  text-transform:uppercase;letter-spacing:0.06em;
-}
-.form-group input{
-  width:100%;background:var(--bg2);
-  border:1px solid var(--border);border-radius:var(--radius);
-  padding:11px 14px;color:var(--text1);font-size:14px;
-  transition:border .2s;
-  -webkit-appearance:none;
-}
-.form-group input:focus{outline:none;border-color:var(--blue-l)}
-.form-group input::placeholder{color:var(--text3)}
-
-.btn-launch{
-  width:100%;padding:14px;
-  background:var(--blue);color:#fff;
-  border:none;border-radius:var(--radius);
-  font-size:15px;font-weight:700;cursor:pointer;
-  transition:background .2s;margin-top:4px;
-  -webkit-tap-highlight-color:transparent;
-  letter-spacing:0.02em;
-}
-.btn-launch:hover{background:var(--blue-l)}
-.btn-launch:active{transform:scale(0.98)}
-
-.hint{
-  font-size:11px;color:var(--text3);margin-top:12px;
-  line-height:1.6;text-align:center;
-}
-.hint a{color:var(--blue-l)}
-
-/* Saved URLs list */
-.saved-label{
-  font-size:11px;color:var(--text3);font-weight:600;
-  text-transform:uppercase;letter-spacing:0.08em;
-  margin:20px 0 8px;
-}
-.saved-list{display:flex;flex-direction:column;gap:6px}
-.saved-item{
-  display:flex;align-items:center;gap:10px;
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--radius);padding:10px 14px;cursor:pointer;
-  transition:border-color .15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.saved-item:hover{border-color:rgba(255,255,255,0.15)}
-.saved-name{font-size:13px;color:var(--text1);font-weight:600;flex:1}
-.saved-url{font-size:10px;color:var(--text3);font-family:monospace;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
-.saved-del{
-  color:var(--text3);background:none;border:none;cursor:pointer;
-  font-size:16px;padding:2px 4px;border-radius:4px;flex-shrink:0;
-}
-.saved-del:hover{color:var(--red);background:rgba(220,38,38,0.1)}
-
-/* Error */
-.error-box{
-  background:rgba(220,38,38,0.1);border:1px solid var(--red);
-  border-radius:var(--radius);padding:10px 14px;
-  color:#FCA5A5;font-size:13px;margin-top:10px;display:none;
+/* Light Mode */
+body.light{
+  --bg:#F1F5F9;
+  --text:#0F172A;
 }
 
-/* ── TOPBAR (when app is open) ──────────────────────── */
-#topbar{
-  position:fixed;top:0;left:0;right:0;
-  height:48px;
-  background:var(--bg1);border-bottom:1px solid var(--border);
-  display:none;align-items:center;
-  padding:0 12px;gap:10px;z-index:20;
-}
-#topbar .tb-title{
-  flex:1;font-size:14px;font-weight:700;color:var(--text1);
-}
-.tb-btn{
-  background:none;border:none;color:var(--text2);cursor:pointer;
-  font-size:13px;padding:6px 10px;border-radius:6px;
-  border:1px solid var(--border);white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
-}
-.tb-btn:hover{background:var(--bg2)}
-
-/* ── MOBILE BOTTOM SHEET for URL input ─────────────── */
-@media(max-width:600px){
-  .config-card{border-radius:var(--radius-lg) var(--radius-lg) 0 0;
-    position:fixed;bottom:0;left:0;right:0;max-width:100%;
-    padding:20px 20px 32px;}
-  #launcher{justify-content:flex-start;padding-top:40px}
-  .logo-wrap{margin-bottom:20px}
+/* Splash theme support */
+body.light #splash{
+  background:#F1F5F9;
 }
 
-/* ── INSTALL PWA BANNER ─────────────────────────────── */
-#pwa-banner{
-  display:none;position:fixed;bottom:0;left:0;right:0;
-  background:var(--bg1);border-top:1px solid var(--border);
-  padding:12px 16px;z-index:30;
-  flex-direction:column;gap:8px;
+/* Toggle Button */
+#theme-toggle{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:999;
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:14px;
+  cursor:pointer;
+  background:#1E293B;
+  color:#fff;
 }
-#pwa-banner p{font-size:13px;color:var(--text2)}
-#pwa-banner strong{color:var(--text1)}
-#pwa-banner .pwa-btns{display:flex;gap:8px}
-#pwa-banner button{
-  padding:8px 16px;border-radius:var(--radius);border:none;
-  font-size:13px;font-weight:600;cursor:pointer;
+
+body.light #theme-toggle{
+  background:#E2E8F0;
+  color:#000;
 }
-.pwa-install{background:var(--blue);color:#fff}
-.pwa-dismiss{background:transparent;color:var(--text3);border:1px solid var(--border) !important}
 </style>
 </head>
 <body>
-
-<!-- Topbar (shown when app loads in iframe) -->
-<div id="topbar">
-  <div class="tb-title">⚡ SP5 Electrical</div>
-  <button class="tb-btn" onclick="openFullscreen()">⛶ Fullscreen</button>
-  <button class="tb-btn" onclick="closeApp()">✕ Close</button>
+<button id="theme-toggle">🌙</button>
+<!-- Splash screen while app loads -->
+<div id="splash">
+  <div class="splash-bolt">⚡</div>
+  <div>
+    <div class="splash-title" id="splashTitle">SP5 Electrical</div>
+    <div class="splash-dept" id="splashDept">Loading...</div>
+  </div>
+  <div class="splash-bar"><div class="splash-progress" id="splashBar"></div></div>
+  <div class="splash-msg" id="splashMsg">Connecting to server...</div>
 </div>
 
-<!-- Iframe for the Apps Script web app -->
-<iframe id="app-frame" allowfullscreen></iframe>
-
-<!-- Launcher screen -->
-<div id="launcher">
-  <div class="logo-wrap">
-    <span class="logo-bolt">⚡</span>
-    <div class="logo-title">SP5 Electrical</div>
-    <div class="logo-sub">MANAGEMENT SYSTEM · SP-5 SCREENING PLANT</div>
-  </div>
-
-  <div class="config-card">
-    <div class="config-title">Connect to App</div>
-
-    <div class="form-group">
-      <label>Apps Script Web App URL</label>
-      <input type="url" id="appUrl"
-        placeholder="https://script.google.com/macros/s/..."
-        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-    </div>
-
-    <div class="form-group">
-      <label>Save as (name)</label>
-      <input type="text" id="appName" placeholder="SP5 Production" value="SP5 Electrical">
-    </div>
-
-    <button class="btn-launch" onclick="launchApp()">Launch App →</button>
-    <div class="error-box" id="errBox"></div>
-
-    <div class="hint">
-      Paste your Google Apps Script deployment URL above.<br>
-      <a href="#" onclick="showHelp()">How to get the URL?</a>
-    </div>
-
-    <div id="savedSection" style="display:none">
-      <div class="saved-label">Saved Apps</div>
-      <div class="saved-list" id="savedList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- PWA install banner -->
-<div id="pwa-banner">
-  <p><strong>Install SP5 App</strong> — Add to Home Screen for best mobile experience</p>
-  <div class="pwa-btns">
-    <button class="pwa-install" onclick="installPWA()">Install</button>
-    <button class="pwa-dismiss" onclick="dismissPWA()">Not now</button>
-  </div>
-</div>
+<!-- The actual app runs here — full screen, no chrome -->
+<iframe
+  id="app-frame"
+  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation"
+  allow="camera; microphone"
+></iframe>
 
 <script>
-// ── Saved apps (localStorage) ─────────────────────────────────
-function getSaved() {
-  try { return JSON.parse(localStorage.getItem('sp5_apps') || '[]'); }
-  catch(e) { return []; }
-}
-function saveTo(name, url) {
-  const apps = getSaved().filter(a => a.url !== url);
-  apps.unshift({ name, url, ts: Date.now() });
-  localStorage.setItem('sp5_apps', JSON.stringify(apps.slice(0, 5)));
-}
-function deleteSaved(url) {
-  const apps = getSaved().filter(a => a.url !== url);
-  localStorage.setItem('sp5_apps', JSON.stringify(apps));
-  renderSaved();
-}
+(function() {
+  // Set splash text from config
+  document.getElementById('splashTitle').textContent = APP_CONFIG.APP_NAME;
+  document.getElementById('splashDept').textContent  = APP_CONFIG.DEPT;
 
-function renderSaved() {
-  const apps = getSaved();
-  const sec  = document.getElementById('savedSection');
-  const list = document.getElementById('savedList');
-  if (!apps.length) { sec.style.display = 'none'; return; }
-  sec.style.display = 'block';
-  list.innerHTML = apps.map(a => `
-    <div class="saved-item" onclick="loadSaved('${encodeURIComponent(a.url)}','${encodeURIComponent(a.name)}')">
-      <div>
-        <div class="saved-name">${a.name}</div>
-        <div class="saved-url">${a.url.replace('https://script.google.com/macros/s/','…/')}</div>
-      </div>
-      <button class="saved-del" onclick="event.stopPropagation();deleteSaved('${encodeURIComponent(a.url)}')" title="Remove">✕</button>
-    </div>`).join('');
-}
+  const bar  = document.getElementById('splashBar');
+  const msg  = document.getElementById('splashMsg');
+  const splash = document.getElementById('splash');
+  const frame  = document.getElementById('app-frame');
 
-function loadSaved(encodedUrl, encodedName) {
-  const url  = decodeURIComponent(encodedUrl);
-  const name = decodeURIComponent(encodedName);
-  document.getElementById('appUrl').value  = url;
-  document.getElementById('appName').value = name;
-  launchApp();
-}
+  // Animate progress bar
+  let pct = 0;
+  const msgs = [
+    [0,  'Connecting to server...'],
+    [30, 'Loading data...'],
+    [60, 'Preparing interface...'],
+    [85, 'Almost ready...'],
+  ];
+  const timer = setInterval(() => {
+    pct = Math.min(pct + (pct < 70 ? 2 : 0.5), 95);
+    bar.style.width = pct + '%';
+    const m = msgs.slice().reverse().find(([p]) => pct >= p);
+    if (m) msg.textContent = m[1];
+  }, 80);
 
-// ── Launch ────────────────────────────────────────────────────
-function launchApp() {
-  const url  = document.getElementById('appUrl').value.trim();
-  const name = document.getElementById('appName').value.trim() || 'SP5 Electrical';
-  const err  = document.getElementById('errBox');
-  err.style.display = 'none';
+  // Load the app
+  frame.src = APP_CONFIG.APP_URL;
 
-  if (!url) { showErr('Please enter the Apps Script Web App URL'); return; }
-  if (!url.startsWith('https://script.google.com/macros/s/')) {
-    showErr('URL must start with https://script.google.com/macros/s/\n\nDouble-check your deployment URL in Apps Script.');
-    return;
-  }
-
-  saveTo(name, url);
-
-  // Show iframe + topbar
-  const frame = document.getElementById('app-frame');
-  frame.src = url;
-  frame.style.display = 'block';
-  frame.style.top = '48px';
-  frame.style.height = 'calc(100% - 48px)';
-
-  const tb = document.getElementById('topbar');
-  tb.style.display = 'flex';
-  tb.querySelector('.tb-title').textContent = '⚡ ' + name;
-
-  document.getElementById('launcher').style.display = 'none';
-
-  // Save last used
-  localStorage.setItem('sp5_last', JSON.stringify({ url, name }));
-}
-
-function closeApp() {
-  document.getElementById('app-frame').src = 'about:blank';
-  document.getElementById('app-frame').style.display = 'none';
-  document.getElementById('topbar').style.display = 'none';
-  document.getElementById('launcher').style.display = 'flex';
-}
-
-function openFullscreen() {
-  const frame = document.getElementById('app-frame');
-  if (frame.requestFullscreen) frame.requestFullscreen();
-  else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
-  else {
-    // Fallback: open directly in new tab
-    const url = localStorage.getItem('sp5_last');
-    if (url) window.open(JSON.parse(url).url, '_blank');
-  }
-}
-
-function showErr(msg) {
-  const b = document.getElementById('errBox');
-  b.textContent = msg; b.style.display = 'block';
-}
-
-function showHelp() {
-  alert('Steps to get the URL:\n\n1. Open Apps Script (script.google.com)\n2. Click "Deploy" → "Manage deployments"\n3. Copy the Web App URL\n   (starts with https://script.google.com/macros/s/...)\n4. Paste it here');
-}
-
-// ── Auto-load last used app ───────────────────────────────────
-window.addEventListener('load', () => {
-  renderSaved();
-  const last = localStorage.getItem('sp5_last');
-  if (last) {
-    try {
-      const { url, name } = JSON.parse(last);
-      document.getElementById('appUrl').value  = url;
-      document.getElementById('appName').value = name;
-    } catch(e) {}
-  }
-});
-
-// ── PWA Install ───────────────────────────────────────────────
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const dismissed = localStorage.getItem('pwa_dismissed');
-  if (!dismissed) document.getElementById('pwa-banner').style.display = 'flex';
-});
-
-function installPWA() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(() => {
-    deferredPrompt = null;
-    document.getElementById('pwa-banner').style.display = 'none';
+  frame.addEventListener('load', () => {
+    clearInterval(timer);
+    bar.style.width = '100%';
+    msg.textContent = 'Ready!';
+    setTimeout(() => splash.classList.add('hide'), 300);
+    setTimeout(() => splash.style.display = 'none', 750);
   });
-}
-function dismissPWA() {
-  localStorage.setItem('pwa_dismissed', '1');
-  document.getElementById('pwa-banner').style.display = 'none';
-}
+
+  // Fallback if load event doesn't fire (some browsers)
+  setTimeout(() => {
+    if (!splash.classList.contains('hide')) {
+      clearInterval(timer);
+      bar.style.width = '100%';
+      splash.classList.add('hide');
+      setTimeout(() => splash.style.display = 'none', 500);
+    }
+  }, 8000);
+})();
 </script>
 
-<!-- PWA Manifest (inline) -->
+<!-- PWA Manifest — makes "Add to Home Screen" work properly -->
 <script>
-const manifest = {
-  name: 'SP5 Electrical Management',
-  short_name: 'SP5 Elec',
-  description: 'SP5 Electrical Department Management System',
-  start_url: './',
-  display: 'standalone',
-  background_color: '#0F1923',
-  theme_color: '#0F1923',
-  icons: [
-    { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230F1923"/><text y=".9em" font-size="80">⚡</text></svg>', sizes: '192x192', type: 'image/svg+xml' }
-  ]
-};
-const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-const link = document.createElement('link');
-link.rel = 'manifest';
-link.href = URL.createObjectURL(blob);
-document.head.appendChild(link);
+(function() {
+  const manifest = {
+    name: APP_CONFIG.APP_NAME,
+    short_name: APP_CONFIG.APP_SHORT,
+    description: APP_CONFIG.DEPT,
+    start_url: './',
+    display: 'standalone',
+    orientation: 'any',
+    background_color: '#0F1923',
+    theme_color: '#0F1923',
+    icons: [{
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%230F1923'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='320'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E",
+      sizes: '512x512',
+      type: 'image/svg+xml',
+      purpose: 'any maskable'
+    }]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  const link = document.createElement('link');
+  link.rel  = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+})();
+<script>
+/* ===== Theme Toggle System ===== */
+
+(function(){
+
+  const btn = document.getElementById("theme-toggle");
+
+  // Load saved theme
+  const savedTheme = localStorage.getItem("theme");
+
+  if(savedTheme === "light"){
+    document.body.classList.add("light");
+    btn.textContent = "☀️";
+  } else {
+    btn.textContent = "🌙"; // default dark
+  }
+
+  // Toggle click
+  btn.addEventListener("click", ()=>{
+
+    document.body.classList.toggle("light");
+
+    if(document.body.classList.contains("light")){
+      localStorage.setItem("theme","light");
+      btn.textContent = "☀️";
+    } else {
+      localStorage.setItem("theme","dark");
+      btn.textContent = "🌙";
+    }
+
+  });
+
+})();
 </script>
+   
+</script>
+
 </body>
 </html>
