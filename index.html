@@ -48,56 +48,38 @@ DEPT:
 /* Reset */
 
 *,*::before,*::after{
-
 box-sizing:border-box;
 margin:0;
 padding:0;
-
 }
 
 html,body{
-
 height:100%;
 width:100%;
 overflow:hidden;
-
 }
 
-/* Theme Variables */
+/* Default DARK */
 
-:root{
+body{
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
---bg:#0F1923;
---text:#E2E8F0;
+background:#0F1923;
+color:#E2E8F0;
 
---btn-bg:#1E293B;
---btn-text:#fff;
-
+transition:background .3s,color .3s;
 }
 
-/* Light Mode */
+/* LIGHT MODE */
 
 body.light{
 
---bg:#F1F5F9;
---text:#0F172A;
-
---btn-bg:#E2E8F0;
---btn-text:#000;
+background:#F1F5F9;
+color:#0F172A;
 
 }
 
-body{
-
-font-family:'Segoe UI',system-ui,
--apple-system,sans-serif;
-
-background:var(--bg);
-color:var(--text);
-
-}
-
-/* Toggle Button */
+/* Button */
 
 #theme-toggle{
 
@@ -116,11 +98,20 @@ border-radius:10px;
 
 cursor:pointer;
 
-background:var(--btn-bg);
+background:#1E293B;
 
-color:var(--btn-text);
+color:#fff;
 
 font-size:14px;
+
+}
+
+/* Light button color */
+
+body.light #theme-toggle{
+
+background:#E2E8F0;
+color:#000;
 
 }
 
@@ -140,7 +131,7 @@ height:100%;
 
 border:none;
 
-background:var(--bg);
+background:inherit;
 
 }
 
@@ -152,7 +143,7 @@ position:fixed;
 
 inset:0;
 
-background:var(--bg);
+background:inherit;
 
 display:flex;
 
@@ -189,17 +180,13 @@ animation:pulse 1.5s ease-in-out infinite;
 @keyframes pulse{
 
 0%,100%{
-
 opacity:1;
 transform:scale(1);
-
 }
 
 50%{
-
 opacity:.7;
 transform:scale(.95);
-
 }
 
 }
@@ -266,7 +253,7 @@ color:#64748B;
 
 <body>
 
-<!-- Manual Theme Toggle -->
+<!-- Toggle Button -->
 
 <button id="theme-toggle">
 Light Mode ☀️
@@ -314,7 +301,7 @@ Connecting to server...
 
 </div>
 
-<!-- App Frame -->
+<!-- iframe -->
 
 <iframe
 id="app-frame"
@@ -327,7 +314,7 @@ allow="camera; microphone"
 
 <script>
 
-/* Splash System */
+/* Splash */
 
 (function(){
 
@@ -378,26 +365,19 @@ const msgs=[
 const timer=setInterval(()=>{
 
 pct=Math.min(
-
 pct+(pct<70?2:0.5),
-
 95
-
 );
 
 bar.style.width=
 pct+'%';
 
 const m=msgs
-
 .slice()
-
 .reverse()
-
 .find(([p])=>pct>=p);
 
 if(m)
-
 msg.textContent=m[1];
 
 },80);
@@ -434,7 +414,7 @@ splash.style.display='none';
 
 })();
 
-/* Manual Dark ⇄ Light Toggle */
+/* Theme Toggle */
 
 const btn=
 document.getElementById(
@@ -449,18 +429,17 @@ btn.addEventListener(
 document.body.classList
 .toggle("light");
 
-if(
+/* Change button text */
 
+if(
 document.body.classList
 .contains("light")
-
 ){
 
 btn.textContent=
 "Dark Mode 🌙";
 
 }
-
 else{
 
 btn.textContent=
