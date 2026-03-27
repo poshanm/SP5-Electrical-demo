@@ -16,32 +16,25 @@ content="width=device-width, initial-scale=1.0">
 
 <body>
 
-<!-- ── MAIN APP ───────────────────────────────────────────── -->
+<!-- MAIN APP -->
 
 <div id="app">
 
-<!-- Top Bar -->
+<!-- Topbar -->
 
 <div class="topbar">
 
 <button class="menu-btn"
 onclick="toggleSidebar()">
+
 ☰
+
 </button>
 
 <div class="topbar-title"
 id="pageTitle">
+
 Dashboard
-</div>
-
-<div class="topbar-right">
-
-<button class="icon-btn"
-onclick="loadDashboard()">
-
-🔄
-
-</button>
 
 </div>
 
@@ -93,9 +86,9 @@ Maintenance
 </a>
 
 <a class="nav-item"
-onclick="navigate('greasing')">
+onclick="navigate('breakdown')">
 
-Greasing
+Breakdown
 
 </a>
 
@@ -103,13 +96,6 @@ Greasing
 onclick="navigate('repair')">
 
 Repair
-
-</a>
-
-<a class="nav-item"
-onclick="navigate('breakdown')">
-
-Breakdown
 
 </a>
 
@@ -130,8 +116,6 @@ onclick="toggleSidebar()">
 
 </div>
 
-<!-- Page Content -->
-
 <div class="page-content"
 id="pageContent">
 
@@ -140,43 +124,6 @@ Loading...
 </div>
 
 </div>
-
-<!-- Modal -->
-
-<div class="modal-overlay"
-id="modalOverlay">
-
-</div>
-
-<div class="modal"
-id="modal">
-
-<div class="modal-header">
-
-<div class="modal-title"
-id="modalTitle">
-
-Form
-
-</div>
-
-<button class="modal-close"
-onclick="closeModal()">
-
-✕
-
-</button>
-
-</div>
-
-<div class="modal-body"
-id="modalBody">
-
-</div>
-
-</div>
-
-<!-- Toast -->
 
 <div class="toast"
 id="toast">
