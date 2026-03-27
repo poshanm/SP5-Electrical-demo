@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>SP5 Electrical Dashboard</title>
+<title>SP5 Electrical</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -14,19 +16,175 @@ content="width=device-width, initial-scale=1.0">
 
 <body>
 
-<h2>⚡ SP5 Electrical Dashboard</h2>
+<!-- ── MAIN APP ───────────────────────────────────────────── -->
 
-<button onclick="loadDashboard()">
-Load Dashboard
+<div id="app">
+
+<!-- Top Bar -->
+
+<div class="topbar">
+
+<button class="menu-btn"
+onclick="toggleSidebar()">
+☰
 </button>
 
-<div id="dashboard">
+<div class="topbar-title"
+id="pageTitle">
+Dashboard
+</div>
+
+<div class="topbar-right">
+
+<button class="icon-btn"
+onclick="loadDashboard()">
+
+🔄
+
+</button>
+
+</div>
+
+</div>
+
+<!-- Sidebar -->
+
+<div class="sidebar"
+id="sidebar">
+
+<div class="sidebar-header">
+
+<div class="sidebar-logo">
+
+⚡ SP5 Elec.
+
+</div>
+
+<button class="sidebar-close"
+onclick="toggleSidebar()">
+
+✕
+
+</button>
+
+</div>
+
+<nav class="sidebar-nav">
+
+<a class="nav-item active"
+onclick="navigate('dashboard')">
+
+Dashboard
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('motors')">
+
+Motor List
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('maintenance')">
+
+Maintenance
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('greasing')">
+
+Greasing
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('repair')">
+
+Repair
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('breakdown')">
+
+Breakdown
+
+</a>
+
+<a class="nav-item"
+onclick="navigate('directory')">
+
+Directory
+
+</a>
+
+</nav>
+
+</div>
+
+<div class="sidebar-overlay"
+id="sidebarOverlay"
+onclick="toggleSidebar()">
+
+</div>
+
+<!-- Page Content -->
+
+<div class="page-content"
+id="pageContent">
 
 Loading...
+
+</div>
+
+</div>
+
+<!-- Modal -->
+
+<div class="modal-overlay"
+id="modalOverlay">
+
+</div>
+
+<div class="modal"
+id="modal">
+
+<div class="modal-header">
+
+<div class="modal-title"
+id="modalTitle">
+
+Form
+
+</div>
+
+<button class="modal-close"
+onclick="closeModal()">
+
+✕
+
+</button>
+
+</div>
+
+<div class="modal-body"
+id="modalBody">
+
+</div>
+
+</div>
+
+<!-- Toast -->
+
+<div class="toast"
+id="toast">
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
